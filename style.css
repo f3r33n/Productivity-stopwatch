@@ -399,6 +399,95 @@ h1, h2, h3 {
         grid-template-columns: 1fr;
     }
 }
+/* -------------------------
+   Magical Analog Clock Styles
+   Add this near the timer / stopwatch CSS in style.css
+   ------------------------- */
+
+/* Analog wrapper scales responsively with screen width */
+.analog-wrap {
+    width: min(80vw, 260px);   /* responsive: max 260px, shrink to 80% of viewport width */
+    margin: 18px auto 8px;
+    position: relative;
+    display: block;
+    will-change: transform;
+}
+
+
+/* Canvas - circular, glassy background + inner shadow */
+#analog-clock {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 25%, rgba(255,255,255,0.08), transparent 20%),
+                linear-gradient(180deg, rgba(255,255,255,0.03), transparent 40%);
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.20),         /* subtle depth */
+        inset 0 6px 16px rgba(255,255,255,0.02); /* inner sheen */
+    border: 1px solid rgba(255,255,255,0.06);
+    overflow: hidden;
+}
+
+/* overlay for sparkle/pulse (pure CSS animation so hands aren't affected) */
+.analog-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* tiny twinkling star in the center for magic */
+.analog-star {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 0%, rgba(255,255,255,0.8) 30%, rgba(255,255,255,0.0) 70%);
+    box-shadow:
+        0 0 8px rgba(138, 96, 255, 0.8),
+        0 0 18px rgba(74,108,247,0.5);
+    opacity: 0.9;
+    transform-origin: center;
+    animation: twinkle 2.2s ease-in-out infinite;
+}
+
+/* pulsing halo (subtle) */
+.analog-overlay::before {
+    content: "";
+    position: absolute;
+    width: 120%;
+    height: 120%;
+    border-radius: 50%;
+    filter: blur(18px);
+    background: radial-gradient(circle, rgba(74,108,247,0.12), transparent 40%);
+    opacity: 0.75;
+    animation: halo 3.6s linear infinite;
+}
+
+/* keyframes */
+@keyframes twinkle {
+    0%   { transform: scale(0.9);   opacity: 0.6;  filter: blur(0.2px); }
+    50%  { transform: scale(1.4);   opacity: 1;    filter: blur(0.6px); }
+    100% { transform: scale(0.9);   opacity: 0.6;  filter: blur(0.2px); }
+}
+
+@keyframes halo {
+    0%   { transform: scale(0.96) rotate(0deg); opacity: 0.6; }
+    50%  { transform: scale(1.02) rotate(6deg); opacity: 0.9; }
+    100% { transform: scale(0.96) rotate(0deg); opacity: 0.6; }
+}
+
+/* responsive: shrink on small screens */
+@media (max-width: 480px) {
+    .analog-wrap {
+        width: 90vw;          /* take almost full width of screen */
+        margin: 12px auto;
+    }
+}
+
 /* Social Links */
 .social-links {
     display: flex;

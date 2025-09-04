@@ -23,6 +23,17 @@
 
         <div class="stopwatch-card">
             <div class="timer-display">
+                    <!-- Begin: Magical analog clock (ADD here: immediately after .timer-display) -->
+    <div class="analog-wrap" aria-hidden="false">
+        <canvas id="analog-clock" width="260" height="260" role="img" aria-label="Analog stopwatch"></canvas>
+
+        <!-- decorative overlay (CSS-controlled sparkle/pulse) -->
+        <div class="analog-overlay" aria-hidden="true">
+            <div class="analog-star"></div>
+        </div>
+    </div>
+    <!-- End: Magical analog clock -->
+
                 <span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span>.<span id="milliseconds">00</span>
             </div>
 
