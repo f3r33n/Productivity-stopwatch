@@ -490,7 +490,7 @@ function triggerStarfieldWarp() {
     // automatically stop after ~1.2s
     setTimeout(() => {
         starfieldActive = false;
-    }, 1200);
+    }, 1500);
 }
 
 function drawStarfield(ctx, w, h) {
