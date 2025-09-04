@@ -230,6 +230,9 @@ function resetStopwatch() {
     displayLaps();
     updateAnalytics();
     drawCharts();
+        // Trigger starfield effect on reset
+    triggerStarfieldWarp();
+
 }
 
 // Update analytics
@@ -442,9 +445,68 @@ function drawAnalogClock(ctx, w, h) {
 // animation loop
 function analogRenderLoop() {
     if (!analogCtx) return requestAnimationFrame(analogRenderLoop);
-    // draw using CSS pixel sizes so math is easier
-    drawAnalogClock(analogCtx, analogCssW, analogCssH);
+
+    if (starfieldActive) {
+        drawStarfield(analogCtx, analogCssW, analogCssH);
+    } else {
+        drawAnalogClock(analogCtx, analogCssW, analogCssH);
+    }
+
     requestAnimationFrame(analogRenderLoop);
+}
+
+/* ===============================
+   Starfield Warp Effect (on reset)
+   =============================== */
+
+let starfieldActive = false;
+let stars = [];
+let starStartTime = 0;
+
+function triggerStarfieldWarp() {
+    if (!analogCtx) return;
+
+    starfieldActive = true;
+    starStartTime = Date.now();
+    stars = [];
+
+    const numStars = 120;
+    const cx = analogCssW / 2;
+    const cy = analogCssH / 2;
+
+    for (let i = 0; i < numStars; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2 + Math.random() * 4;
+        stars.push({
+            x: cx,
+            y: cy,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            size: 1 + Math.random() * 2,
+            alpha: 1
+        });
+    }
+
+    // automatically stop after ~1.2s
+    setTimeout(() => {
+        starfieldActive = false;
+    }, 1200);
+}
+
+function drawStarfield(ctx, w, h) {
+    ctx.clearRect(0, 0, w, h);
+    const elapsed = (Date.now() - starStartTime) / 1000;
+
+    for (let star of stars) {
+        star.x += star.vx;
+        star.y += star.vy;
+        star.alpha = Math.max(0, 1 - elapsed * 1.2);
+
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${star.alpha})`;
+        ctx.fill();
+    }
 }
 
 // ensure canvas is ready and start loop
